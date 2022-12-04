@@ -1,0 +1,53 @@
+{% extends "pet_app/index.html" %}
+{% load crispy_forms_tags %}
+{% block content %}
+    <h2>My pets</h2>
+    <div class="border-bottom mb-4"></div>
+    <div class="row">
+        <div class="col-sm-4" style="padding-bottom: 3%">
+            <div class="card bg-light" style="height: 100%;">
+                <div class="card-header">Add new pet</div>
+                <div class="card-body">
+                <form method="POST">
+                    {% csrf_token %}
+                    {{ pet_form | crispy }}
+                    <button class="btn btn-outline-info" type="submit" name="submit-pet">Save</button>
+                </form>
+                </div>
+            </div>
+        </div>
+        {% for pet in pets %}
+            <div class="col-sm-4" style="padding-bottom: 3%">
+                <div class="card border-success mb-3" style="height: 100%">
+                    <div class="card-header">{{ pet.name | capfirst }}, {{ pet.type }}</div>
+                    <div class="card-body">
+                    {% if pet.visits %}
+                        <h5 class="card-title">Next visits:</h5>
+                        <ul class="list-group">
+                        {% for visit in pet.visits %}
+                            <a class="list-group-item list-group-item-action"
+                                href="{% url 'visit_view' %}/{{ visit.id }}"
+                                name="visit-{{ visit.vet.id }}-{{ pet.id }}-{{ visit.date | date:"d-m-y" }}-{{ visit.date | time:"H-i" }}">
+                                {{ visit.date | date:"l, M j" }} at {{ visit.date | time:"H:i" }} with {{ visit.vet.name }}
+                            </a> 
+                        {% endfor %}
+                        </ul>
+                    {% else %}
+                        <button type="button" name="book-visit" class="btn btn-outline-primary" onclick="redirect_to('/')" style="width: 100%">
+                            Book visit now!
+                        </button>
+                    {% endif %}
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+
+    <h2>My profile</h2>
+    <div class="border-bottom mb-4"></div>
+    <form method="POST">
+        {% csrf_token %}
+        {{ user_form | crispy }}
+        <button class="btn btn-outline-info" type="submit" name="submit-user">Save</button>
+    </form>
+{% endblock content %}

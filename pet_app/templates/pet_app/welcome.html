@@ -1,0 +1,44 @@
+{% extends "pet_app/index.html" %}
+
+{% block content %}
+
+    <header>
+      <div id="carouselIndicators" class="carousel slide" data-ride="carousel">
+        <ol class="carousel-indicators">
+          {% for pic in pictures %}
+            {% if forloop.counter == 1 %}
+                <li data-target="#carouselIndicators" data-slide-to="{{ forloop.counter0 }}" class="active"></li>
+            {% else %}
+                <li data-target="#carouselIndicators" data-slide-to="{{ forloop.counter0 }}"></li>
+            {% endif %}
+          {% endfor %}
+        </ol>
+        <div class="carousel-inner" role="listbox" style="border-radius: 4px;">
+            {% for pic in pictures %}
+                {% if forloop.counter == 1 %}
+                    <div class="carousel-item active" style="background-image: url('{{ pic }}')"></div>      
+                {% else %}
+                    <div class="carousel-item" style="background-image: url('{{ pic }}')"></div>      
+                {% endif %}
+            {% endfor %}
+        </div>
+        <a class="carousel-control-prev" href="#carouselIndicators" role="button" data-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="sr-only">Previous</span>
+        </a>
+        <a class="carousel-control-next" href="#carouselIndicators" role="button" data-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="sr-only">Next</span>
+        </a>
+        </div>
+    </header>
+
+    <section class="py-5">
+      <div class="container">
+        <h1>Pet clinic "Bark!"</h1>
+        <div class="border-bottom mb-4"></div>
+        <p>{% lorem %}</p>
+      </div>
+    </section>
+
+{% endblock %}

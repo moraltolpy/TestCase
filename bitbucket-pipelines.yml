@@ -1,0 +1,23 @@
+image: python:3.6-alpine
+clone:
+  depth: full
+pipelines:
+  branches:
+    master:
+      - step:
+          name: Test
+          caches:
+            - pip
+          script:
+            - apk update && apk add --no-cache chromium chromium-chromedriver
+            - apk add --virtual build-deps gcc python-dev musl-dev postgresql-dev wget unzip
+            - pip install flake8
+            - flake8 --exclude migrations,settings.py,config.py,models.py --ignore=E501,F405,E731,E402,E241,E722 --exit-zero pet_app
+            - flake8 --ignore=E501,F405,E731,E402,E241,F811 --exit-zero features/
+            - pip install -r requirements.txt
+            - python manage.py behave --junit --junit-directory=test-results
+      - step:
+          name: Staging
+          script:
+            - apk update && apk add --no-cache git wget unzip
+            - git push https://heroku:$HEROKU_API_KEY@git.heroku.com/$HEROKU_APP_NAME.git HEAD:master
